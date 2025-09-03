@@ -37,6 +37,7 @@ function normalizarValor(v) {
 // Endpoints
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
+// Ver cuántos links hay por valor
 app.get("/estado-links", (_req, res) => {
   const linksPorValor = cargarLinks();
   const estado = {};
@@ -44,6 +45,17 @@ app.get("/estado-links", (_req, res) => {
     estado[valor] = Array.isArray(lista) ? lista.length : 0;
   }
   res.json(estado);
+});
+
+// 📌 Ver todos los links de un valor
+app.get("/obtener-links/:valor", (req, res) => {
+  const key = normalizarValor(req.params.valor);
+  if (!key) return res.status(400).json({ error: "Valor inválido" });
+
+  const linksPorValor = cargarLinks();
+  const lista = Array.isArray(linksPorValor[key]) ? linksPorValor[key] : [];
+
+  res.json({ links: lista });
 });
 
 // Agregar links a un valor
@@ -99,7 +111,7 @@ app.post("/borrar-links", (req, res) => {
   });
 });
 
-// Obtener un link (consumo)
+// Obtener y consumir un link (elimina de la lista)
 app.post("/obtener-link", (req, res) => {
   let { valor } = req.body;
   const key = normalizarValor(valor);
@@ -123,4 +135,5 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en puerto ${PORT}`);
 });
+
 
