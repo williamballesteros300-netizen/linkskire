@@ -47,7 +47,13 @@ app.get("/estado-links", (_req, res) => {
   res.json(estado);
 });
 
-// 📌 Ver todos los links de un valor
+// 📌 Listar todos los links agrupados por valor
+app.get("/listar-todos", (_req, res) => {
+  const linksPorValor = cargarLinks();
+  res.json(linksPorValor);
+});
+
+// 📌 Ver todos los links de un valor específico
 app.get("/obtener-links/:valor", (req, res) => {
   const key = normalizarValor(req.params.valor);
   if (!key) return res.status(400).json({ error: "Valor inválido" });
@@ -135,5 +141,7 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en puerto ${PORT}`);
 });
+
+
 
 
